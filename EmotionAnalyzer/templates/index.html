@@ -1,0 +1,198 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center mb-5">
+        <h1 class="display-4">Human Emotion Recognition System</h1>
+        <p class="lead">Detect and analyze facial emotions from images or webcam input</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 emotion-card">
+            <div class="card-body text-center">
+                <i class="fas fa-image feature-icon"></i>
+                <h5 class="card-title">Image Upload</h5>
+                <p class="card-text">Upload images for emotion analysis. Get detailed emotion detection results.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 emotion-card">
+            <div class="card-body text-center">
+                <i class="fas fa-video feature-icon"></i>
+                <h5 class="card-title">Webcam Capture</h5>
+                <p class="card-text">Use your webcam for real-time emotion detection and analysis.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 emotion-card">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-bar feature-icon"></i>
+                <h5 class="card-title">Data Visualization</h5>
+                <p class="card-text">View your emotion data in interactive charts and visualizations.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Image Upload Section -->
+    <div class="col-md-6 mb-5">
+        <div class="card emotion-card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Upload an Image</h4>
+            </div>
+            <div class="card-body">
+                <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
+                    <div class="mb-3">
+                        <label for="file" class="form-label">Select an image file</label>
+                        <input type="file" class="form-control" id="file" name="file" accept=".jpg, .jpeg, .png" required>
+                        <div class="form-text">Supported formats: JPG, JPEG, PNG</div>
+                    </div>
+                    
+                    <div class="text-center my-3">
+                        <img id="imagePreview" class="img-fluid rounded" alt="Image preview">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" id="uploadButton">
+                            <i class="fas fa-upload me-2"></i> Upload and Analyze
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Webcam Section -->
+    <div class="col-md-6 mb-5">
+        <div class="card emotion-card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Use Webcam</h4>
+            </div>
+            <div class="card-body">
+                <div class="webcam-container mb-3">
+                    <video id="webcam" class="d-none img-fluid rounded" autoplay playsinline></video>
+                    <canvas id="canvas" class="d-none img-fluid rounded"></canvas>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button id="startWebcam" class="btn btn-primary">
+                        <i class="fas fa-video me-2"></i> Start Webcam
+                    </button>
+                    <button id="captureImage" class="btn btn-success" disabled>
+                        <i class="fas fa-camera me-2"></i> Capture and Analyze
+                    </button>
+                </div>
+                
+                <div id="webcamResults" class="mt-3">
+                    <!-- Webcam results will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card emotion-card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">About Emotion Recognition</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">How it works</h5>
+                <p>Our Human Emotion Recognition System uses computer vision and machine learning algorithms to detect and analyze facial expressions. The system can identify the following emotions:</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-danger p-2 me-2"><i class="fas fa-angry fa-lg"></i></span>
+                            <span>Angry</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-success p-2 me-2"><i class="fas fa-dizzy fa-lg"></i></span>
+                            <span>Disgust</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-purple p-2 me-2"><i class="fas fa-grimace fa-lg"></i></span>
+                            <span>Fear</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-warning p-2 me-2"><i class="fas fa-smile-beam fa-lg"></i></span>
+                            <span>Happy</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-info p-2 me-2"><i class="fas fa-sad-tear fa-lg"></i></span>
+                            <span>Sad</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-orange p-2 me-2"><i class="fas fa-surprise fa-lg"></i></span>
+                            <span>Surprise</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-secondary p-2 me-2"><i class="fas fa-meh fa-lg"></i></span>
+                            <span>Neutral</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="card-title mt-4">Applications</h5>
+                <p>Emotion recognition technology has various applications, including:</p>
+                <ul>
+                    <li>Market research and user experience testing</li>
+                    <li>Mental health monitoring</li>
+                    <li>Interactive entertainment and gaming</li>
+                    <li>Customer satisfaction analysis</li>
+                    <li>Educational engagement assessment</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+<script>
+    // Image preview script
+    document.getElementById('file').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const imagePreview = document.getElementById('imagePreview');
+        
+        if (file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+            
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
+        }
+    });
+    
+    // Form submission loading state
+    document.getElementById('uploadForm').addEventListener('submit', function() {
+        const uploadButton = document.getElementById('uploadButton');
+        uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Processing...';
+        uploadButton.disabled = true;
+    });
+</script>
+{% endblock %}

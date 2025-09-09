@@ -1,0 +1,124 @@
+/* Custom styles for the emotion recognition system */
+
+/* Card styles */
+.emotion-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.emotion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Chart containers */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+/* Feature cards on the home page */
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--bs-primary);
+}
+
+/* Image preview */
+#imagePreview {
+    max-height: 300px;
+    width: auto;
+    margin: 0 auto;
+    border-radius: 5px;
+    display: none;
+}
+
+/* Webcam container */
+.webcam-container {
+    position: relative;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+#webcam, #canvas {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Result confidence bars */
+.confidence-bar {
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+/* Emotion badges */
+.emotion-badge {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+/* Emotion colors */
+.emotion-angry {
+    background-color: #dc3545;
+}
+
+.emotion-disgust {
+    background-color: #20c997;
+}
+
+.emotion-fear {
+    background-color: #6f42c1;
+}
+
+.emotion-happy {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.emotion-sad {
+    background-color: #0dcaf0;
+}
+
+.emotion-surprise {
+    background-color: #fd7e14;
+}
+
+.emotion-neutral {
+    background-color: #6c757d;
+}
+
+/* Loading spinner */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+    }
+}

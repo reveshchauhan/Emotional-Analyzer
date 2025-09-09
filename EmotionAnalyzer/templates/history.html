@@ -1,0 +1,152 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5">Detection History</h1>
+        <p class="lead">View your previous emotion detection results</p>
+    </div>
+</div>
+
+{% if results.items %}
+    <div class="row">
+        {% for result in results.items %}
+            <div class="col-md-6 mb-4">
+                <div class="card emotion-card">
+                    <div class="card-header {% if result.source_type == 'upload' %}bg-primary{% else %}bg-success{% endif %} text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                {% if result.source_type == 'upload' %}
+                                    <i class="fas fa-image me-2"></i> Uploaded Image
+                                {% else %}
+                                    <i class="fas fa-video me-2"></i> Webcam Capture
+                                {% endif %}
+                            </h5>
+                            <span class="badge bg-light text-dark">{{ result.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        {% if result.filename %}
+                            <div class="text-center mb-4">
+                                <img src="{{ url_for('uploaded_file', filename=result.filename) }}" 
+                                     alt="Detection result" 
+                                     class="img-fluid rounded" 
+                                     style="max-height: 300px;">
+                            </div>
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Detected Emotion</h5>
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="badge emotion-badge p-2 me-2 
+                                        {% if result.dominant_emotion == 'angry' %}emotion-angry
+                                        {% elif result.dominant_emotion == 'disgust' %}emotion-disgust
+                                        {% elif result.dominant_emotion == 'fear' %}emotion-fear
+                                        {% elif result.dominant_emotion == 'happy' %}emotion-happy
+                                        {% elif result.dominant_emotion == 'sad' %}emotion-sad
+                                        {% elif result.dominant_emotion == 'surprise' %}emotion-surprise
+                                        {% else %}emotion-neutral{% endif %}">
+                                        <i class="fas 
+                                            {% if result.dominant_emotion == 'angry' %}fa-angry
+                                            {% elif result.dominant_emotion == 'disgust' %}fa-dizzy
+                                            {% elif result.dominant_emotion == 'fear' %}fa-grimace
+                                            {% elif result.dominant_emotion == 'happy' %}fa-smile-beam
+                                            {% elif result.dominant_emotion == 'sad' %}fa-sad-tear
+                                            {% elif result.dominant_emotion == 'surprise' %}fa-surprise
+                                            {% else %}fa-meh{% endif %} fa-lg"></i>
+                                    </span>
+                                    <span class="fs-5">{{ result.dominant_emotion|capitalize }}</span>
+                                </div>
+                                <p>Confidence: <span class="fw-bold">{{ "%.2f"|format(result.confidence * 100) }}%</span></p>
+                                <p>Faces detected: <span class="badge bg-secondary">{{ result.faces_detected }}</span></p>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>All Emotions</h5>
+                                <ul class="list-group">
+                                    {% for emotion, score in result.emotions.items()|sort(reverse=True, attribute='1') %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center 
+                                            {% if emotion == result.dominant_emotion %}active{% endif %}">
+                                            {{ emotion|capitalize }}
+                                            <span class="badge bg-primary rounded-pill">{{ "%.2f"|format(score * 100) }}%</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    <nav aria-label="Emotion detection history navigation">
+        <ul class="pagination justify-content-center">
+            {% if results.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('history', page=results.prev_num) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            
+            {% for page_num in results.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == results.page %}
+                        <li class="page-item active">
+                            <a class="page-link" href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('history', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">&hellip;</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if results.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('history', page=results.next_num) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+{% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i> No detection history yet</h4>
+                <p>You haven't analyzed any images or webcam captures yet. Go to the home page to start detecting emotions!</p>
+                <hr>
+                <p class="mb-0">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i> Go to Home Page
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
